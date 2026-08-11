@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Prompt Guard</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <span class="brand-icon">🛡️</span>
+        <div>
+          <div class="brand-name">AI Prompt Guard</div>
+          <div class="brand-tagline">PII Protection Agent</div>
+        </div>
+      </div>
+      <label class="toggle" title="Enable / Disable globally">
+        <input type="checkbox" id="toggle-enabled" />
+        <span class="toggle-track"></span>
+      </label>
+    </header>
+
+    <!-- Status -->
+    <div id="status-bar" class="status-bar status-on">
+      <span id="status-dot" class="dot dot-on"></span>
+      <span id="status-label">Active — prompts are being scanned</span>
+    </div>
+
+    <!-- Stats -->
+    <section class="stats">
+      <div class="stat">
+        <div class="stat-value" id="stat-scans">0</div>
+        <div class="stat-label">Prompts scanned</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-value stat-value-red" id="stat-blocked">0</div>
+        <div class="stat-label">PII blocked</div>
+      </div>
+    </section>
+
+    <!-- Per-site toggles -->
+    <section class="sites">
+      <div class="sites-title">Site protection</div>
+      <div class="sites-list" id="sites-list">
+        <!-- populated by popup.js -->
+      </div>
+    </section>
+
+    <!-- Allow list -->
+    <section class="allowlist" id="allowlist-section" style="display:none">
+      <div class="sites-title">
+        Allow list
+        <button id="btn-clear-allowlist" class="link-btn" style="margin-left:auto">Clear all</button>
+      </div>
+      <div class="allowlist-items" id="allowlist-items"></div>
+    </section>
+
+    <!-- Custom rules -->
+    <section class="custom-rules">
+      <div class="sites-title">
+        Custom rules
+        <button id="btn-add-rule" class="link-btn" style="margin-left:auto">+ Add</button>
+      </div>
+      <div id="custom-rules-list"></div>
+      <div id="custom-rule-form" style="display:none">
+        <input id="rule-label"   class="rule-input" type="text" placeholder='Label, e.g. "Employee ID"' />
+        <input id="rule-pattern" class="rule-input" type="text" placeholder='Regex, e.g. EMP-\d{6}' />
+        <div class="rule-row">
+          <input id="rule-flags" class="rule-input rule-input-sm" type="text" placeholder="Flags: gi" value="gi" />
+          <select id="rule-confidence" class="rule-select">
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <div class="rule-actions">
+          <button id="btn-rule-save"   class="rule-btn rule-btn-primary">Save</button>
+          <button id="btn-rule-cancel" class="rule-btn rule-btn-secondary">Cancel</button>
+          <span id="rule-error" class="rule-error"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <button id="btn-reset" class="link-btn">Reset stats</button>
+    </footer>
+  </div>
+  <script src="browser-compat.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

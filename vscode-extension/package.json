@@ -1,0 +1,144 @@
+{
+  "name": "ai-prompt-guard",
+  "displayName": "AI Prompt Guard",
+  "description": "Detects and redacts PII before it reaches AI assistants. Works with Claude Code, Copilot, and any AI chat.",
+  "version": "2.0.0",
+  "publisher": "promptguard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.tools.sap/I547774/ai-prompt-guard"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other",
+    "Linters"
+  ],
+  "icon": "images/icon.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "chatParticipants": [
+      {
+        "id": "pii-guard",
+        "name": "pii-guard",
+        "description": "Scans your message for PII before sending to Claude. Use: @pii-guard your message here",
+        "isSticky": false
+      }
+    ],
+    "commands": [
+      {
+        "command": "promptguard.scanSelection",
+        "title": "PII Guard: Scan Selection",
+        "category": "AI Prompt Guard"
+      },
+      {
+        "command": "promptguard.scanClipboard",
+        "title": "PII Guard: Scan Clipboard",
+        "category": "AI Prompt Guard"
+      },
+      {
+        "command": "promptguard.scanFile",
+        "title": "PII Guard: Scan Entire File",
+        "category": "AI Prompt Guard"
+      },
+      {
+        "command": "promptguard.scanDocument",
+        "title": "PII Guard: Scan Document (PDF / Word / Excel)",
+        "category": "AI Prompt Guard"
+      },
+      {
+        "command": "promptguard.sanitizeInPlace",
+        "title": "PII Guard: Sanitize / Encrypt In Place",
+        "category": "AI Prompt Guard"
+      },
+      {
+        "command": "promptguard.toggleEnabled",
+        "title": "PII Guard: Toggle On/Off",
+        "category": "AI Prompt Guard"
+      },
+      {
+        "command": "promptguard.clearDecorations",
+        "title": "PII Guard: Clear Highlights",
+        "category": "AI Prompt Guard"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "promptguard.scanSelection",
+        "key": "ctrl+shift+p ctrl+shift+s",
+        "mac": "cmd+shift+p cmd+shift+s",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "AI Prompt Guard",
+      "properties": {
+        "promptguard.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable PII Guard scanning"
+        },
+        "promptguard.autoScanOnType": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically scan the active document while typing (debounced 2s)"
+        },
+        "promptguard.highlightPii": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight detected PII with inline decorations"
+        },
+        "promptguard.customRules": {
+          "type": "array",
+          "default": [],
+          "description": "Custom PII regex rules. Each rule is an object with: label (display name), pattern (regex string), flags (default: \"gi\"), confidence (\"high\"|\"medium\"|\"low\", default: \"medium\").",
+          "items": {
+            "type": "object",
+            "required": ["label", "pattern"],
+            "properties": {
+              "label":      { "type": "string",  "description": "Display name, e.g. \"Employee ID\"" },
+              "pattern":    { "type": "string",  "description": "Regex pattern string, e.g. \"EMP-\\\\d{6}\"" },
+              "flags":      { "type": "string",  "default": "gi", "description": "Regex flags (must include \"g\")" },
+              "confidence": { "type": "string",  "enum": ["high","medium","low"], "default": "medium" }
+            }
+          }
+        }
+      }
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "promptguard.sanitizeInPlace",
+          "group": "promptguard",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "promptguard.scanSelection",
+          "group": "promptguard",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "promptguard.scanFile",
+          "group": "promptguard"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "lint": "eslint src",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^2.24.0"
+  },
+  "dependencies": {
+    "mammoth": "^1.12.0",
+    "pdf-parse": "^2.4.5",
+    "xlsx": "^0.18.5"
+  }
+}

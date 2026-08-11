@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "AI Prompt Guard",
+  "version": "2.0.0",
+  "description": "Automatically detects and redacts PII from your AI prompts before they leave your browser.",
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ai-prompt-guard@promptguard",
+      "strict_min_version": "113.0"
+    }
+  },
+
+  "permissions": ["storage"],
+
+  "host_permissions": [
+    "https://chat.openai.com/*",
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "https://copilot.microsoft.com/*",
+    "https://www.perplexity.ai/*",
+    "https://chat.mistral.ai/*",
+    "https://huggingface.co/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://copilot.microsoft.com/*",
+        "https://www.perplexity.ai/*",
+        "https://chat.mistral.ai/*",
+        "https://huggingface.co/*"
+      ],
+      "js": ["browser-compat.js", "pii-detector.js", "file-scanner.js", "content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Prompt Guard"
+  }
+}
