@@ -1,6 +1,6 @@
 // AI Prompt Guard — Popup logic v2
 // Uses _b (globalThis._b) set by browser-compat.js for Chrome/Firefox/Edge compatibility.
-/* global _b */
+/* global _b, LicenseManager */
 
 const toggleEl    = document.getElementById('toggle-enabled');
 const statusBar   = document.getElementById('status-bar');
@@ -162,7 +162,13 @@ btnRuleCancel.addEventListener('click', () => {
   customRuleForm.style.display = 'none';
 });
 
-btnRuleSave.addEventListener('click', () => {
+btnRuleSave.addEventListener('click', async () => {
+  const hasPro = await LicenseManager.hasFeature('custom_rules');
+  if (!hasPro) {
+    ruleError.textContent = '🔒 Custom rules require a Pro license.';
+    return;
+  }
+
   const label   = ruleLabel.value.trim();
   const pattern = rulePattern.value.trim();
   const flags   = ruleFlags.value.trim() || 'gi';
@@ -215,3 +221,59 @@ function escapeHtml(str) {
 function escapeAttr(str) {
   return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
+
+// ── License UI ────────────────────────────────────────────────────────────────
+
+const planBadge        = document.getElementById('plan-badge');
+const licenseKeyInput  = document.getElementById('license-key-input');
+const btnActivate      = document.getElementById('btn-activate');
+const btnDeactivate    = document.getElementById('btn-deactivate');
+const licenseError     = document.getElementById('license-error');
+const licenseFree      = document.getElementById('license-free');
+const licensePro       = document.getElementById('license-pro');
+const customRulesSection = document.getElementById('custom-rules-section');
+
+async function refreshLicenseUI() {
+  const result = await LicenseManager.getPlan();
+  const isPro  = result.valid && result.plan !== 'free';
+
+  planBadge.textContent = isPro ? result.plan.toUpperCase() : 'FREE';
+  planBadge.className   = `plan-badge plan-${isPro ? result.plan : 'free'}`;
+  licenseFree.style.display = isPro ? 'none' : '';
+  licensePro.style.display  = isPro ? ''     : 'none';
+
+  // Gate custom rules section
+  if (isPro) {
+    customRulesSection.classList.remove('pro-locked');
+    btnAddRule.style.display = '';
+  } else {
+    customRulesSection.classList.add('pro-locked');
+    btnAddRule.style.display = 'none';
+  }
+}
+
+refreshLicenseUI();
+
+btnActivate.addEventListener('click', async () => {
+  const key = licenseKeyInput.value.trim();
+  if (!key) { licenseError.textContent = 'Enter a license key.'; return; }
+  btnActivate.textContent = 'Checking…';
+  btnActivate.disabled    = true;
+  licenseError.textContent = '';
+
+  const result = await LicenseManager.activate(key);
+  btnActivate.textContent = 'Activate';
+  btnActivate.disabled    = false;
+
+  if (result.valid) {
+    licenseKeyInput.value = '';
+    refreshLicenseUI();
+  } else {
+    licenseError.textContent = result.error || 'Invalid key.';
+  }
+});
+
+btnDeactivate.addEventListener('click', async () => {
+  await LicenseManager.deactivate();
+  refreshLicenseUI();
+});

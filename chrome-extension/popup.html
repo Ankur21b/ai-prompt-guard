@@ -59,8 +59,29 @@
       <div class="allowlist-items" id="allowlist-items"></div>
     </section>
 
+    <!-- License / Pro -->
+    <section class="license-section" id="license-section">
+      <div class="sites-title">
+        License
+        <span id="plan-badge" class="plan-badge plan-free">Free</span>
+      </div>
+      <div id="license-free" class="license-free">
+        <p class="license-desc">Upgrade to <strong>Pro</strong> to unlock custom rules, file scanning &amp; audit logs.</p>
+        <div class="license-input-row">
+          <input id="license-key-input" class="rule-input" type="text" placeholder="APG-XXXX-XXXX-XXXX-XXXX" />
+          <button id="btn-activate" class="rule-btn rule-btn-primary">Activate</button>
+        </div>
+        <span id="license-error" class="rule-error"></span>
+        <a href="https://github.com/Ankur21b/ai-prompt-guard#pro" target="_blank" class="link-btn" style="font-size:11px">Get a Pro key →</a>
+      </div>
+      <div id="license-pro" class="license-pro" style="display:none">
+        <span class="license-active-msg">✅ Pro active — all features unlocked</span>
+        <button id="btn-deactivate" class="link-btn" style="font-size:11px;color:#e53e3e">Remove key</button>
+      </div>
+    </section>
+
     <!-- Custom rules -->
-    <section class="custom-rules">
+    <section class="custom-rules" id="custom-rules-section">
       <div class="sites-title">
         Custom rules
         <button id="btn-add-rule" class="link-btn" style="margin-left:auto">+ Add</button>
@@ -91,6 +112,7 @@
     </footer>
   </div>
   <script src="browser-compat.js"></script>
+  <script src="license.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

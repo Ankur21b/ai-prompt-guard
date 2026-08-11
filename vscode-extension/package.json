@@ -6,7 +6,7 @@
   "publisher": "promptguard",
   "repository": {
     "type": "git",
-    "url": "https://github.tools.sap/I547774/ai-prompt-guard"
+    "url": "https://github.com/Ankur21b/ai-prompt-guard"
   },
   "license": "MIT",
   "engines": {
@@ -64,6 +64,16 @@
       {
         "command": "promptguard.clearDecorations",
         "title": "PII Guard: Clear Highlights",
+        "category": "AI Prompt Guard"
+      },
+      {
+        "command": "promptguard.activateLicense",
+        "title": "PII Guard: Activate Pro License",
+        "category": "AI Prompt Guard"
+      },
+      {
+        "command": "promptguard.deactivateLicense",
+        "title": "PII Guard: Remove License",
         "category": "AI Prompt Guard"
       }
     ],

@@ -228,6 +228,50 @@ header {
 
 .allowlist-remove:hover { color: #dc2626; }
 
+/* License section */
+.license-section {
+  padding: 10px 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.plan-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.5px;
+}
+
+.plan-free { background: #f3f4f6; color: #6b7280; }
+.plan-pro  { background: #fef3c7; color: #b45309; }
+.plan-enterprise { background: #ede9fe; color: #6d28d9; }
+
+.license-desc { font-size: 11px; color: #6b7280; margin-bottom: 6px; line-height: 1.4; }
+
+.license-input-row { display: flex; gap: 6px; margin-bottom: 4px; }
+.license-input-row .rule-input { flex: 1; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 10px; }
+
+.license-active-msg { font-size: 11px; color: #16a34a; font-weight: 500; display: block; margin-bottom: 4px; }
+
+.license-pro { display: flex; flex-direction: column; gap: 2px; }
+
+/* Locked feature overlay */
+.pro-locked { opacity: 0.45; pointer-events: none; position: relative; }
+.pro-locked::after {
+  content: '🔒 Pro';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  font-weight: 600;
+  color: #b45309;
+  background: rgba(255,255,255,0.9);
+  padding: 2px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
 /* Custom rules section */
 .custom-rules {
   padding: 10px 16px;

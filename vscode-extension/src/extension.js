@@ -14,10 +14,12 @@
 const vscode = require('vscode');
 const { detect, detectAndEncrypt, setCustomRules } = require('./pii-detector-node');
 const { extractText, createSanitizedCopy, isSupported, canSanitize, supportedLabel, SUPPORTED_EXTENSIONS } = require('./doc-parser');
+const LicenseManager = require('./license-manager');
 
 // ── State
 let statusBarItem;
 let enabled = true;
+let licenseManager;
 let lastScanResult = null;
 let autoScanTimer = null;
 
@@ -342,6 +344,17 @@ async function forwardToModel(text, stream, token) {
 async function cmdScanDocument(vsContext, preselectedPath = null) {
   if (!enabled) { vscode.window.showWarningMessage('AI Prompt Guard is disabled.'); return; }
 
+  const hasPro = await licenseManager.hasFeature('file_scanning');
+  if (!hasPro) {
+    const action = await vscode.window.showWarningMessage(
+      '🔒 File scanning requires AI Prompt Guard Pro.',
+      'Activate License', 'Get a Key'
+    );
+    if (action === 'Activate License') await licenseManager.activateInteractive();
+    if (action === 'Get a Key') vscode.env.openExternal(vscode.Uri.parse('https://github.com/Ankur21b/ai-prompt-guard#pro'));
+    return;
+  }
+
   let filePath = preselectedPath;
 
   if (!filePath) {
@@ -473,6 +486,9 @@ function activate(context) {
   enabled = cfg().get('enabled', true);
   loadCustomRules();
 
+  // License manager
+  licenseManager = new LicenseManager(context);
+
   // Status bar
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   statusBarItem.show();
@@ -488,6 +504,8 @@ function activate(context) {
     vscode.commands.registerCommand('promptguard.sanitizeInPlace',  () => cmdSanitizeInPlace(context)),
     vscode.commands.registerCommand('promptguard.toggleEnabled',    cmdToggle),
     vscode.commands.registerCommand('promptguard.clearDecorations', cmdClearDecorations),
+    vscode.commands.registerCommand('promptguard.activateLicense',  () => licenseManager.activateInteractive()),
+    vscode.commands.registerCommand('promptguard.deactivateLicense',() => licenseManager.deactivate()),
 
     // Chat participant button handlers
     vscode.commands.registerCommand('promptguard._chatSendSanitized', async () => {
